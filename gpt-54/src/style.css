@@ -1,0 +1,84 @@
+:root {
+  --bg-deep: #07040d;
+  --bg-mid: #13071e;
+  --panel: rgba(14, 10, 26, 0.76);
+  --glow-cyan: #57e8ff;
+  --glow-amber: #ffbe55;
+  --glow-red: #ff5468;
+  --glow-green: #7dffb1;
+  --text-main: #f8efc8;
+  --text-dim: #c8c08f;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  overflow: hidden;
+  background:
+    radial-gradient(circle at top, rgba(108, 255, 220, 0.08), transparent 28%),
+    radial-gradient(circle at bottom, rgba(255, 88, 88, 0.12), transparent 32%),
+    linear-gradient(180deg, var(--bg-mid), var(--bg-deep) 55%, #040208 100%);
+  color: var(--text-main);
+  font-family: "Trebuchet MS", "Lucida Grande", "Lucida Sans Unicode", sans-serif;
+  letter-spacing: 0.04em;
+}
+
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+}
+
+body::before {
+  background:
+    repeating-linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.045) 0,
+      rgba(255, 255, 255, 0.045) 1px,
+      transparent 1px,
+      transparent 4px
+    );
+  mix-blend-mode: screen;
+  opacity: 0.17;
+  animation: scan-drift 12s linear infinite;
+}
+
+body::after {
+  background:
+    radial-gradient(circle at center, transparent 56%, rgba(0, 0, 0, 0.46) 100%),
+    radial-gradient(circle at center, rgba(255, 255, 255, 0.08), transparent 44%);
+  opacity: 0.78;
+}
+
+canvas {
+  display: block;
+  width: min(100vw, 1400px);
+  height: min(100vh, 920px);
+  margin: 0 auto;
+  image-rendering: pixelated;
+  filter:
+    saturate(1.12)
+    contrast(1.06)
+    drop-shadow(0 0 18px rgba(72, 255, 233, 0.12))
+    drop-shadow(0 0 42px rgba(255, 159, 89, 0.1));
+}
+
+@keyframes scan-drift {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(12px);
+  }
+}
