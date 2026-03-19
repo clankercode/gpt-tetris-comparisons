@@ -737,7 +737,7 @@ ${cards}
       </section>
 
       <footer class="footer">
-        <p>Built with one prompt and many models. <a href="https://github.com/xertrov/model-compare-tetris">View source on GitHub</a></p>
+        <p>Built with one prompt and many models. <a href="https://github.com/clankercode/gpt-tetris-comparisons">View source on GitHub</a></p>
       </footer>
     </main>
   </body>
