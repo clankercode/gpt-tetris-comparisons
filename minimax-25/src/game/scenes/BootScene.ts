@@ -11,10 +11,11 @@ class BootScene extends Phaser.Scene {
   }
 
   preload() {
-    this.load.audio('music', '/music/music.wav');
-    this.load.audio('drop', '/music/drop.wav');
-    this.load.audio('line', '/music/line.wav');
-    this.load.audio('tetris', '/music/tetris.wav');
+    const base = '/gpt-tetris-comparisons/minimax-25';
+    this.load.audio('music', `${base}/music/music.wav`);
+    this.load.audio('drop', `${base}/music/drop.wav`);
+    this.load.audio('line', `${base}/music/line.wav`);
+    this.load.audio('tetris', `${base}/music/tetris.wav`);
   }
 
   create() {
