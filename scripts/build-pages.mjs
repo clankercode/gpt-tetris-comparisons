@@ -5,6 +5,8 @@ import { spawn } from "node:child_process";
 
 const repoRoot = process.cwd();
 const docsDir = path.join(repoRoot, "docs");
+const siteDirPrefixes = ["gemini-", "glm-", "gpt-", "minimax-", "opus-", "sonnet-"];
+const nestedSiteDirs = ["tetris-clone"];
 
 async function exists(targetPath) {
   try {
@@ -39,15 +41,33 @@ function run(command, args, cwd) {
 async function discoverSites() {
   const entries = await readdir(repoRoot, { withFileTypes: true });
   const dirs = entries
-    .filter((entry) => entry.isDirectory() && entry.name.startsWith("gpt-"))
+    .filter(
+      (entry) => entry.isDirectory() && siteDirPrefixes.some((prefix) => entry.name.startsWith(prefix)),
+    )
     .map((entry) => entry.name)
     .sort();
 
   const sites = [];
 
   for (const dir of dirs) {
-    const packageJsonPath = path.join(repoRoot, dir, "package.json");
-    const indexHtmlPath = path.join(repoRoot, dir, "index.html");
+    let appDir = path.join(repoRoot, dir);
+    let packageJsonPath = path.join(appDir, "package.json");
+    let indexHtmlPath = path.join(appDir, "index.html");
+
+    if (!(await exists(packageJsonPath)) || !(await exists(indexHtmlPath))) {
+      for (const nestedDir of nestedSiteDirs) {
+        const candidateDir = path.join(appDir, nestedDir);
+        const candidatePackageJsonPath = path.join(candidateDir, "package.json");
+        const candidateIndexHtmlPath = path.join(candidateDir, "index.html");
+
+        if ((await exists(candidatePackageJsonPath)) && (await exists(candidateIndexHtmlPath))) {
+          appDir = candidateDir;
+          packageJsonPath = candidatePackageJsonPath;
+          indexHtmlPath = candidateIndexHtmlPath;
+          break;
+        }
+      }
+    }
 
     if (!(await exists(packageJsonPath)) || !(await exists(indexHtmlPath))) {
       continue;
@@ -55,6 +75,7 @@ async function discoverSites() {
 
     const pkg = JSON.parse(await readFile(packageJsonPath, "utf8"));
     sites.push({
+      appDir,
       dir,
       title: pkg.name || dir,
     });
@@ -63,19 +84,19 @@ async function discoverSites() {
   return sites;
 }
 
-async function ensureDependencies(siteDir) {
-  const nodeModulesDir = path.join(siteDir, "node_modules");
+async function ensureDependencies(appDir) {
+  const nodeModulesDir = path.join(appDir, "node_modules");
   if (await exists(nodeModulesDir)) {
     return;
   }
 
-  const bunLock = path.join(siteDir, "bun.lock");
+  const bunLock = path.join(appDir, "bun.lock");
   const args = ["install"];
   if (await exists(bunLock)) {
     args.push("--frozen-lockfile");
   }
 
-  await run("bun", args, siteDir);
+  await run("bun", args, appDir);
 }
 
 function escapeHtml(value) {
@@ -87,6 +108,16 @@ function escapeHtml(value) {
     .replaceAll("'", "&#39;");
 }
 
+const originalPrompt = [
+  "Create a tetris clone with an immersive retro aesthetic.",
+  "The game starts automatically at the main menu.",
+  "Main menu entries are for new game options, settings, and about. The menu should show the controls somewhere.",
+  "The game itself should play by classic tetris rules, with effects for clearing lines.",
+  "The game should have some retro music suitable for tetris.",
+  "For the tech stack, use bun, typescript, vite, and phaser.",
+  "Use python to generate a random port number for the vite dev server.",
+];
+
 function renderLandingPage(sites) {
   const cards = sites
     .map(
@@ -96,6 +127,9 @@ function renderLandingPage(sites) {
           <span>Open the ${escapeHtml(site.dir)} generation</span>
         </a>`,
     )
+    .join("\n");
+  const promptLines = originalPrompt
+    .map((line) => `            <span>${escapeHtml(line)}</span>`)
     .join("\n");
 
   return `<!doctype html>
@@ -186,6 +220,71 @@ function renderLandingPage(sites) {
         color: var(--muted);
       }
 
+      .details {
+        max-width: 70ch;
+        margin: 18px 0 0;
+        padding: 18px 20px;
+        border: 1px solid rgba(24, 21, 18, 0.1);
+        background: rgba(255, 252, 246, 0.66);
+        color: #43392f;
+      }
+
+      .details p {
+        margin: 0;
+        font-size: 0.98rem;
+        line-height: 1.7;
+      }
+
+      .details p + p {
+        margin-top: 10px;
+      }
+
+      .prompt-card {
+        position: relative;
+        margin: 28px 0 0;
+        padding: 28px 28px 24px 34px;
+        border: 1px solid rgba(31, 108, 92, 0.2);
+        background:
+          linear-gradient(135deg, rgba(255, 248, 236, 0.96), rgba(245, 231, 206, 0.9)),
+          rgba(255, 252, 246, 0.85);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+        overflow: hidden;
+      }
+
+      .prompt-card::before {
+        content: "Prompt";
+        position: absolute;
+        top: 18px;
+        right: 20px;
+        font-size: 0.72rem;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: rgba(31, 108, 92, 0.68);
+      }
+
+      .prompt-card::after {
+        content: "";
+        position: absolute;
+        inset: 0 auto 0 0;
+        width: 10px;
+        background: linear-gradient(180deg, var(--accent), #e5b857 55%, var(--accent-2));
+      }
+
+      blockquote {
+        margin: 0;
+        padding: 0;
+        display: grid;
+        gap: 0.72rem;
+        font-size: 1.02rem;
+        line-height: 1.7;
+        color: #2d261f;
+      }
+
+      blockquote span {
+        display: block;
+        max-width: 66ch;
+      }
+
       .grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -228,12 +327,6 @@ function renderLandingPage(sites) {
         font-size: 1.55rem;
       }
 
-      footer {
-        margin-top: 18px;
-        color: var(--muted);
-        font-size: 0.92rem;
-      }
-
       @media (max-width: 640px) {
         main {
           width: min(100% - 20px, 1100px);
@@ -242,6 +335,11 @@ function renderLandingPage(sites) {
 
         .hero {
           padding: 22px;
+        }
+
+        .prompt-card {
+          margin-top: 22px;
+          padding: 22px 20px 20px 28px;
         }
       }
     </style>
@@ -255,15 +353,24 @@ function renderLandingPage(sites) {
           Each card opens a different Tetris generation built from the same prompt in a different GPT family.
           Every demo is published in its own subdirectory so the deployed URL stays aligned with the folder name in this repository.
         </p>
+        <div class="details">
+          <p>
+            The prompts were run in planning mode, and when the agent asked follow-up multiple-choice questions it generally took the first or recommended option.
+          </p>
+          <p>
+            After that, each run was allowed to continue autonomously until completion.
+          </p>
+        </div>
+        <div class="prompt-card">
+          <blockquote>
+${promptLines}
+          </blockquote>
+        </div>
       </section>
 
       <section class="grid">
 ${cards}
       </section>
-
-      <footer>
-        The empty <code>gpt-53</code> folder is intentionally skipped because it does not contain a buildable site.
-      </footer>
     </main>
   </body>
 </html>
@@ -284,11 +391,10 @@ async function main() {
   await writeFile(path.join(docsDir, ".nojekyll"), "");
 
   for (const site of sites) {
-    const siteDir = path.join(repoRoot, site.dir);
-    await ensureDependencies(siteDir);
-    await run("bun", ["run", "build"], siteDir);
+    await ensureDependencies(site.appDir);
+    await run("bun", ["run", "build"], site.appDir);
 
-    const distDir = path.join(siteDir, "dist");
+    const distDir = path.join(site.appDir, "dist");
     if (!(await exists(distDir))) {
       throw new Error(`Expected build output at ${distDir}`);
     }
