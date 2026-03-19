@@ -8,7 +8,7 @@ class BootScene extends Phaser.Scene {
     constructor() { super('Boot'); }
     preload() {
         // Generate block texture
-        const graphics = this.make.graphics({ x: 0, y: 0, add: false });
+        const graphics = this.make.graphics();
         graphics.fillStyle(0xffffff, 1);
         graphics.fillRect(0, 0, BLOCK_SIZE, BLOCK_SIZE);
         graphics.lineStyle(2, 0x000000, 0.5);

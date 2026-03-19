@@ -1,21 +1,27 @@
 import { defineConfig } from 'vite';
 import { execSync } from 'child_process';
 
-const port = parseInt(execSync('python3 get-port.py').toString().trim());
+export default defineConfig(({ command }) => {
+  const server =
+    command === 'serve'
+      ? {
+          port: parseInt(execSync('python3 get-port.py').toString().trim(), 10),
+          open: true,
+        }
+      : undefined;
 
-export default defineConfig({
-  server: {
-    port,
-    open: true,
-  },
-  resolve: {
-    alias: {
-      '@': '/src',
+  return {
+    base: './',
+    server,
+    resolve: {
+      alias: {
+        '@': '/src',
+      },
     },
-  },
-  build: {
-    outDir: 'dist',
-    assetsDir: 'assets',
-  },
-  publicDir: 'public',
+    build: {
+      outDir: 'dist',
+      assetsDir: 'assets',
+    },
+    publicDir: 'public',
+  };
 });

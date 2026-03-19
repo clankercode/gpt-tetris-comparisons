@@ -125,6 +125,7 @@ function renderLandingPage(sites) {
           <span class="eyebrow">${escapeHtml(site.title)}</span>
           <strong>${escapeHtml(site.dir)}</strong>
           <span>Open the ${escapeHtml(site.dir)} generation</span>
+${site.dir === "sonnet-46" ? '          <span class="card-note">Volume Warning</span>' : ""}
         </a>`,
     )
     .join("\n");
@@ -325,6 +326,19 @@ function renderLandingPage(sites) {
 
       strong {
         font-size: 1.55rem;
+      }
+
+      .card-note {
+        display: inline-flex;
+        width: fit-content;
+        padding: 0.35rem 0.6rem;
+        border: 1px solid rgba(211, 91, 43, 0.35);
+        background: rgba(211, 91, 43, 0.12);
+        color: #8f2d00;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
       }
 
       @media (max-width: 640px) {
