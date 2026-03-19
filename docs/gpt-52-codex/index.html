@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Retro Tetris</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap"
+      rel="stylesheet"
+    />
+    <script type="module" crossorigin src="./assets/index-DUnZsVZy.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-64NLtEV_.css">
+  </head>
+  <body>
+    <div id="app">
+      <div id="game"></div>
+      <div id="overlay">
+        <div id="hud">
+          <div class="hud-block">
+            <div class="hud-label">Score</div>
+            <div id="hud-score" class="hud-value">0</div>
+          </div>
+          <div class="hud-block">
+            <div class="hud-label">Lines</div>
+            <div id="hud-lines" class="hud-value">0</div>
+          </div>
+          <div class="hud-block">
+            <div class="hud-label">Level</div>
+            <div id="hud-level" class="hud-value">1</div>
+          </div>
+          <div class="hud-block">
+            <div class="hud-label">Mode</div>
+            <div id="hud-mode" class="hud-value">Menu</div>
+          </div>
+        </div>
+
+        <div id="menu" class="panel">
+          <div class="title">Retro Tetris</div>
+          <div class="subtitle">Guideline SRS Marathon and Sprint</div>
+
+          <div class="menu-columns">
+            <div class="menu-left">
+              <button class="menu-button" data-panel="newgame">
+                New Game Options
+              </button>
+              <button class="menu-button" data-panel="settings">Settings</button>
+              <button class="menu-button" data-panel="about">About</button>
+            </div>
+            <div class="menu-right">
+              <div id="panel-newgame" class="menu-panel active">
+                <div class="panel-title">New Game Options</div>
+                <button class="menu-button glow" data-mode="marathon">
+                  Marathon
+                </button>
+                <button class="menu-button" data-mode="sprint">Sprint 40</button>
+                <div class="panel-hint">Sprint ends after 40 lines.</div>
+              </div>
+              <div id="panel-settings" class="menu-panel">
+                <div class="panel-title">Settings</div>
+                <label class="toggle">
+                  <input id="toggle-music" type="checkbox" checked />
+                  <span>Music</span>
+                </label>
+                <label class="toggle">
+                  <input id="toggle-sfx" type="checkbox" checked />
+                  <span>SFX</span>
+                </label>
+              </div>
+              <div id="panel-about" class="menu-panel">
+                <div class="panel-title">About</div>
+                <p>
+                  A retro Tetris tribute built with Bun, Vite, TypeScript, and
+                  Phaser. Scanlines on, glow up, rotate forever.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="controls">
+            <div class="controls-title">Controls</div>
+            <div class="controls-grid">
+              <div>Move</div>
+              <div>Arrow Keys</div>
+              <div>Rotate</div>
+              <div>Z / X or Up</div>
+              <div>Soft Drop</div>
+              <div>Down</div>
+              <div>Hard Drop</div>
+              <div>Space</div>
+              <div>Pause</div>
+              <div>P</div>
+              <div>Menu</div>
+              <div>Esc</div>
+            </div>
+          </div>
+        </div>
+
+        <div id="pause" class="panel hidden">
+          <div class="title">Paused</div>
+          <div class="subtitle">Press P to resume</div>
+        </div>
+
+        <div id="gameover" class="panel hidden">
+          <div class="title">Game Over</div>
+          <div class="subtitle">Press Esc for menu</div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
