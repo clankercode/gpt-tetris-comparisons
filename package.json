@@ -1,0 +1,8 @@
+{
+  "name": "model-compare-tetris",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:pages": "bun ./scripts/build-pages.mjs"
+  }
+}
