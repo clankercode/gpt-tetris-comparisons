@@ -16,6 +16,10 @@ const PANEL_LEFT = 540;
 const BOARD_BG = 0x061534;
 
 export default class GameScene extends Phaser.Scene {
+  public constructor() {
+    super({ key: 'GameScene' });
+  }
+
   private engine!: TetrisEngine;
   private settings!: GameSettings;
   private currentPiece: PieceState | null = null;

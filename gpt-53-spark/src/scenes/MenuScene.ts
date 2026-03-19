@@ -9,6 +9,10 @@ const MENU_ITEMS: { key: MenuKey; label: string }[] = [
 ];
 
 export default class MenuScene extends Phaser.Scene {
+  public constructor() {
+    super({ key: 'MenuScene' });
+  }
+
   private titleText?: Phaser.GameObjects.Text;
   private itemTexts: Phaser.GameObjects.Text[] = [];
   private selectedIndex = 0;

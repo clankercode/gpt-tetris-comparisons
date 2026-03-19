@@ -11,6 +11,10 @@ const SETTINGS: { key: SettingKey; label: string }[] = [
 ];
 
 export default class SettingsScene extends Phaser.Scene {
+  public constructor() {
+    super({ key: 'SettingsScene' });
+  }
+
   private selectedIndex = 0;
   private selectedBorder?: Phaser.GameObjects.Rectangle;
   private valueTexts: Phaser.GameObjects.Text[] = [];

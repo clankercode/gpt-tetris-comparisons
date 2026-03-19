@@ -1,6 +1,10 @@
 import Phaser from 'phaser';
 
 export default class AboutScene extends Phaser.Scene {
+  public constructor() {
+    super({ key: 'AboutScene' });
+  }
+
   public create(): void {
     this.cameras.main.setBackgroundColor(0x04071b);
     const cx = this.scale.width / 2;
