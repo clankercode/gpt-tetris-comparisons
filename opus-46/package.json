@@ -1,0 +1,19 @@
+{
+  "name": "retro-tetris",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun run ./scripts/dev.mjs",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "phaser": "^3.90.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.58.2",
+    "typescript": "^5.9.2",
+    "vite": "^7.1.3"
+  }
+}
